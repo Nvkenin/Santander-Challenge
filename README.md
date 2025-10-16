@@ -11,6 +11,8 @@ Utilizei o nmap para escanear a rede, buscar serviços ativos e verificar portas
 nmap -sV -T4 172.16.0.0/24
 ```
 
+![Nmap](images/Nmap.png)
+
 
 Decidi tentar ganhar acesso por SMB
 
@@ -34,12 +36,18 @@ echo -e "passwoerd\m123456\nWelcome123\nmsfadmin" > password.txt
 ```
 
 
+![Wordlist](images/wordlist-smb.png)
+
+
 Com essas wordlists em mãos, utililzarei o medusa para tentar achar um usuário com a senha comprometida 
 
 
 ```bash
 medusa -h 172.16.0.128 -U users.txt -P password.txt -M smbnt -t 2 -T 50
 ```
+
+
+![BruteForce](images/Brute-Force-medusa.png)
 
 
 ## Acesso 
@@ -52,7 +60,12 @@ Com as credenciais tento o acesso ao servidor SMB
 smbclient -L //172.16.0.128 -U msfadmin
 ```
 
-_Password : msfadmin_
+> [!TIP]
+> Password : msfadmin
+>
+
+
+![Acesso](images/Acesso.png)
 
 
 Com isso finalizo o teste sem prejudicar a máquina para continuar mais testes.
